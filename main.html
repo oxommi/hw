@@ -1,0 +1,1377 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>網頁程式設計專題</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+
+  <script>
+    let compulsory_credit = 0;
+    let elective_credit = 0;
+    let celective_credit = 0;
+    window.addEventListener('load', function () {
+      localStorage.clear();
+      document.getElementById("compulsory_credit").innerHTML = compulsory_credit;
+      document.getElementById("elective_credit").innerHTML = elective_credit;
+      document.getElementById("celective_credit").innerHTML = celective_credit;
+    });
+    function setpic(x, action) {
+      switch (action) {
+        case 0: {
+          //必修
+          document.getElementById("compulsory_credit").innerHTML = compulsory_credit;
+          let com = (compulsory_credit / 46) * 360;
+          if (com <= 360) document.getElementById("compulsory_creditF").style.transform = "rotate(" + com + "deg)";
+          else document.getElementById("compulsory_creditF").style.transform = "rotate(360deg)";
+          if (com > 180) {
+            document.getElementById("compulsory_creditS").style.border = "0.75rem solid #3b82f6";
+            document.getElementById("compulsory_creditS").style.transform = "rotate(180deg)";
+          }
+          break;
+        }
+        case 1: {
+          //核心選修
+          document.getElementById("celective_credit").innerHTML = celective_credit;
+          let cal = (celective_credit / 12) * 360;
+          if (cal <= 360) document.getElementById("celective_creditF").style.transform = "rotate(" + cal + "deg)";
+          else document.getElementById("celective_creditF").style.transform = "rotate(360deg)";
+          if (cal > 180) {
+            document.getElementById("celective_creditS").style.border = "0.75rem solid #3b82f6";
+            document.getElementById("celective_creditS").style.transform = "rotate(180deg)";
+          }
+          break;
+        }
+        case 2: {
+          //選修
+          document.getElementById("elective_credit").innerHTML = elective_credit;
+          let ele = (elective_credit / 54) * 360;
+          if (ele <= 360) document.getElementById("elective_creditF").style.transform = "rotate(" + ele + "deg)";
+          else document.getElementById("elective_creditF").style.transform = "rotate(360deg)";
+          if (ele > 180) {
+            document.getElementById("elective_creditS").style.border = "0.75rem solid #3b82f6";
+            document.getElementById("elective_creditS").style.transform = "rotate(180deg)";
+          }
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    }
+    function add(x) {
+      let name = document.getElementById(x);
+      if (localStorage.getItem(x) != null) {
+        localStorage.removeItem(x);
+        saveclass(x, "remove");
+      }
+      else saveclass(x, "add");
+    }
+    function whatsclass(x) {
+      let comele = ["B5703991", "B5703N54", "B570339Q", "B5703M36", "B5703K59", "B5703Q0G", "B57030TX", "B5703021", "B570234X"];
+      let comc = ["B5702P98", "B5702P36", "B5702988", "B5702T0E", "B57011RQ", "B5711M97", "B5701M33", "B57011RS", "B5702N57", "B5703660", "B5701V75", "B5701R9F", "B5701S60", "B5701M3J", "B5701R9E", "B5721M97"];
+      let com1 = ["B5701R9F"];
+      let ele1 = ["B570132V", "B57011RR", "B5701M30", "B570124O", "B5702M57"];
+      for (let i = 0; i < 9; i++) {
+        if (x == comele[i]) { //是核心選修
+          return "elecom";
+        }
+      }
+      for (let i = 0; i < 17; i++) {
+        if (x == comc[i]) { //是必修
+          return "com";
+        }
+      }
+      if (x == com1[0]) {
+        return "com1";
+      }
+      for (let i = 0; i < 5; i++) {
+        if (x == ele1[i]) {
+          return "ele1";
+        }
+      }
+      return "ele";
+    }
+    function saveclass(x, action) {
+      let name2 = document.getElementById(x);
+      let name = name2.innerHTML;
+      switch (whatsclass(x)) {
+        case 'elecom': {
+          console.log("核心", name);
+          if (action == "add") {
+            celective_credit += 3;
+            elective_credit += 3;
+            localStorage.setItem(x, name);
+          }
+          else {
+            celective_credit -= 3; elective_credit -= 3;
+          }
+          setpic(x, 1);
+          setpic(x, 2);
+          break;
+        }
+        case 'com': {
+          console.log("必修", name);
+          if (action == "add") {
+            compulsory_credit += 3;
+            localStorage.setItem(x, name);
+          }
+          else {
+            compulsory_credit -= 3;
+          }
+          setpic(x, 0);
+          break;
+        }
+        case 'com1': {
+          if (action == "add") {
+            compulsory_credit += 1;
+            localStorage.setItem(x, name);
+          }
+          else {
+            compulsory_credit -= 1;
+          }
+          setpic(x, 0);
+          break;
+        }
+        case 'ele1': {
+          if (action == "add") {
+            elective_credit += 1;
+            console.log("選修", name);
+            localStorage.setItem(x, name);
+          }
+          else {
+            elective_credit -= 1;
+          }
+          setpic(x, 2);
+          break;
+        }
+        case 'ele': {
+          if (action == "add") {
+            elective_credit += 3;
+            console.log("選修", name);
+            localStorage.setItem(x, name);
+          }
+          else {
+            elective_credit -= 3;
+          }
+          setpic(x, 2);
+          break;
+        }
+        default: {
+          break;
+        }
+      }
+    }</script>
+  <style>
+    /* Show it is fixed to the top */
+    body,
+    input,
+    select,
+    textarea,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p {
+      font-family: Microsoft YaHei, '宋體', Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;
+
+    }
+
+
+    td>p {
+      margin: 0;
+      padding: 0;
+    }
+
+    /*減少td元素margin*/
+    * {
+      font-size: 13px;
+    }
+
+    body {
+      min-height: 75rem;
+      padding-top: 4.5rem;
+    }
+
+    /*課程按鈕*/
+    p.label {
+      border-radius: 60px;
+
+    }
+
+    p {
+      margin-bottom: 0px;
+    }
+
+    a {
+      text-decoration: none;
+      color: black;
+    }
+
+    td {
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      text-align: center;
+      word-break: break-all;
+      padding: 2px;
+    }
+
+    div>table {
+      position: center;
+      margin: auto;
+    }
+
+    :root {
+      --radial-progress-bar-size: 8rem;
+      --radial-progress-bar-border-width: 0.75rem;
+    }
+
+    .radial-progress-bar {
+      position: relative;
+      height: var(--radial-progress-bar-size);
+      width: var(--radial-progress-bar-size);
+    }
+
+    .radial-progress-bar__percentages {
+      /* Center the content */
+      align-items: center;
+      display: flex;
+      justify-content: center;
+
+      /* Rounded border */
+      border: var(--radial-progress-bar-border-width) solid #d1d5db;
+      border-radius: 9999px;
+
+      /* Size */
+      height: 100%;
+      width: 100%;
+    }
+
+    .radial-progress-bar__curve {
+      /* Position */
+      left: 0;
+      position: absolute;
+      top: 0;
+
+      /* Take full size */
+      height: 100%;
+      width: 100%;
+
+      /* If percentages is less than 50 */
+      /* clip: rect(
+          0px,
+          var(--radial-progress-bar-size),
+          var(--radial-progress-bar-size),
+          calc(var(--radial-progress-bar-size) * 0.5),
+          0px
+      ); */
+
+      /* If percentages is greater than or equals to 50 */
+      clip: rect(auto, auto, auto, auto);
+    }
+
+    .radial-progress-bar__half {
+      /* Take full size */
+      height: 100%;
+      position: absolute;
+      width: 100%;
+
+      /*
+      Background color of curve.
+      The border width should be the same as the area showing the percentages
+      */
+
+    }
+
+    div>table {
+      position: center;
+      margin: auto;
+      font-size: 14px;
+    }
+
+    .radial-progress-bar__half--first {
+      /* Position */
+      clip: rect(0px, calc(var(--radial-progress-bar-size) * 0.5), var(--radial-progress-bar-size), 0px);
+      overflow: hidden;
+      /* Number of percentages * 360 / 100 */
+      transform: rotate(0deg);
+      border: var(--radial-progress-bar-border-width) solid #3b82f6;
+      border-radius: 9999px;
+    }
+
+    .radial-progress-bar__half--second {
+      /* Position */
+      clip: rect(0px, calc(var(--radial-progress-bar-size) * 0.5), var(--radial-progress-bar-size), 0px);
+
+      /* If percentages is less than 50 */
+      /* transform: rotate(0deg); */
+      /* If percentages is greater than or equals to 50 */
+      transform: rotate(0deg);
+
+      border: var(--radial-progress-bar-border-width) solid #d1d5db;
+      border-radius: 9999px;
+    }
+
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+
+    .b-example-divider {
+      height: 3rem;
+      background-color: rgba(0, 0, 0, .1);
+      border: solid rgba(0, 0, 0, .15);
+      border-width: 1px 0;
+      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .b-example-vr {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 100vh;
+    }
+
+    .bi {
+      vertical-align: -.125em;
+      fill: currentColor;
+    }
+
+    .nav-scroller {
+      position: relative;
+      z-index: 2;
+      height: 2.75rem;
+      overflow-y: hidden;
+    }
+
+    .nav-scroller .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding-bottom: 1rem;
+      margin-top: -1px;
+      overflow-x: auto;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+
+    .b-example-divider {
+      height: 3rem;
+      background-color: rgba(0, 0, 0, .1);
+      border: solid rgba(0, 0, 0, .15);
+      border-width: 1px 0;
+      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .b-example-vr {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 100vh;
+    }
+
+    .bi {
+      vertical-align: -.125em;
+      fill: currentColor;
+    }
+
+    .nav-scroller {
+      position: relative;
+      z-index: 2;
+      height: 2.75rem;
+      overflow-y: hidden;
+    }
+
+    .nav-scroller .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding-bottom: 1rem;
+      margin-top: -1px;
+      overflow-x: auto;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">課表</a>
+      <label class="navbar-toggler" type="label" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </label>
+
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <label class="btn btn-outline-success" type="submit">Search</label>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <div class="container" style="margin: 0px;">
+    <div class="row">
+      <div class="col-sm-auto">
+        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light " style="width: 180px;">
+          <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <svg class="bi pe-none me-2" width="20" height="16">
+              <use xlink:href="#bootstrap" />
+            </svg>
+            <span class="fs-4"></span>
+          </a>
+          <hr>
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+              <a href="#" class="nav-link active" aria-current="page">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.707 1.5ZM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5 5 5Z" />
+                </svg>
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="teacher.html" class="nav-link link-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-person-vcard" viewBox="0 0 16 16">
+                  <path
+                    d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5ZM9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8Zm1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Z" />
+                  <path
+                    d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2ZM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96c.026-.163.04-.33.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1.006 1.006 0 0 1 1 12V4Z" />
+                </svg>
+                Teacher
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-journal-text" viewBox="0 0 16 16">
+                  <path
+                    d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                  <path
+                    d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z" />
+                  <path
+                    d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z" />
+                </svg>
+                Class
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link link-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd"
+                    d="M0 0h1v15h15v1H0V0Zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5Z" />
+                </svg>
+                domain
+              </a>
+            </li>
+            <li>
+              <a href="/myclass" class="nav-link link-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                  <path
+                    d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                </svg>
+                myclass
+              </a>
+            </li>
+            <li>
+              <a href="/document" class="nav-link link-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                  <path
+                    d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                  <path
+                    d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                </svg>
+                document
+              </a>
+            </li>
+          </ul>
+          <hr>
+          <div width="128px"><label type="label" class="btn btn-outline-success" onclic="checkpoint()"><svg
+                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-check2-circle" viewBox="0 0 16 16">
+                <path
+                  d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0z" />
+                <path
+                  d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l7-7z" />
+              </svg> Success</label></div>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="d-flex align-items-start">
+          <ul class="nav flex-column nav-pills me-3" id="myTab" role="tablist" aria-orientation="vertical"
+            style="white-space:nowrap">
+            <li class="nav-item" role="presentation">
+              <label class="nav-link active" id="first-year1-tab" data-bs-toggle="pill" data-bs-target="#first-year1"
+                type="label" role="tab" aria-controls="first-year1" aria-selected="true">大一上</label>
+            </li>
+            <li class="nav-item" role="presentation">
+              <label class="nav-link" id="first-year2-tab" data-bs-toggle="pill" data-bs-target="#first-year2"
+                type="label" role="tab" aria-controls="first-year2" aria-selected="true">大一下</label>
+            </li>
+            <li class="nav-item" role="presentation">
+              <label class="nav-link" id="second-year1-tab" data-bs-toggle="pill" data-bs-target="#second-year1"
+                type="label" role="tab" aria-controls="second-year1" aria-selected="true">大二上</label>
+            </li>
+            <li class="nav-item" role="presentation">
+              <label class="nav-link" id="second-year2-tab" data-bs-toggle="pill" data-bs-target="#second-year2"
+                type="label" role="tab" aria-controls="second-year2" aria-selected="true">大二下</label>
+            </li>
+            <li class="nav-item" role="presentation">
+              <label class="nav-link" id="third-year1-tab" data-bs-toggle="pill" data-bs-target="#third-year1"
+                type="label" role="tab" aria-controls="third-year1" aria-selected="false">大三上</label>
+            </li>
+            <li class="nav-item" role="presentation">
+              <label class="nav-link" id="third-year2-tab" data-bs-toggle="pill" data-bs-target="#third-year2"
+                type="label" role="tab" aria-controls="third-year2" aria-selected="false">大三下</label>
+            </li>
+            <li class="nav-item" role="presentation">
+              <label class="nav-link" id="fourth-year1-tab" data-bs-toggle="pill" data-bs-target="#fourth-year1"
+                type="label" role="tab" aria-controls="fourth-year1" aria-selected="false">大四上</label>
+            </li>
+            <li class="nav-item" role="presentation">
+              <label class="nav-link" id="fourth-year2-tab" data-bs-toggle="pill" data-bs-target="#fourth-year2"
+                type="label" role="tab" aria-controls="fourth-year2" aria-selected="false">大四下</label>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="v-pills-tabContent" width="600px">
+            <!--大一上-->
+            <div class="tab-pane fade show active" id="first-year1" role="tabpanel" aria-labelledby="first-year1-tab">
+              first-year1
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>
+                    <p>
+                      <input type="checkbox" class="btn-check" id="B57011RQ-outlined">
+                      <label class="btn btn-outline-secondary" onclick="add(this.id)" for="B57011RQ-outlined"
+                        id="B57011RQ">計算機概論</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57011RR-outlined">
+                      <label class="btn btn-outline-secondary" onclick="add(this.id)" for="B57011RR-outlined"
+                        id="B57011RR">計算機概論實習</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57011RS-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B57011RS-outlined"
+                        id="B57011RS">普通物理</label></p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5711M97-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5711M97-outlined"
+                        id="B5711M97">微積分</label></p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5702M57-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5702M57-outlined"
+                        id="B5701M30">程式設計實習</label></p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+
+                  </td>
+                  <td>
+
+
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5701M33-outlined2"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5701M33-outlined2"
+                        id="B5701M33">程式設計</p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B570124O-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B570124O-outlined"
+                        id="B570124O">產學巡禮導論</p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5701V75-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5701V75-outlined"
+                        id="B5701V75">離散數學</p>
+                  </td>
+                </tr>
+              </table>
+
+            </div>
+            <!--大一下-->
+            <div class="tab-pane fade" id="first-year2" role="tabpanel" aria-labelledby="first-year2-tab">
+              first-year2
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5701S60-outlined">
+                      <label class="btn btn-outline-secondary" onclick="add(this.id)" for="B5701S60-outlined"
+                        id="B5701S60">線性代數</label>
+                    </p>
+
+                  </td>
+                  <td>
+
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5701M3J-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5701M3J-outlined"
+                        id="B5701M3J">程式設計(二)</label></p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5721M97-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5721M97-outlined"
+                        id="B5721M97">微積分</label></p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B570132V-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B570132V-outlined"
+                        id="B570132V">程式設計(二)實習</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+
+                  </td>
+                  <td>
+
+                    <p><input type="checkbox" class="btn-check" id="B5701R9E-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5701R9E-outlined"
+                        id="B5701R9E">數位邏輯</p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5701R9F-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5701R9F-outlined"
+                        id="B5701R9F">數位邏輯實驗</label></p>
+                  </td>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5701M33-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5701M33-outlined"
+                        id="B5701M33">程式設計</label></p>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B570124N-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B570124N-outlined"
+                        id="B570124N">程式競賽技巧導論</label></p>
+                  </td>
+                  <td></td>
+                  <td>
+
+                  </td>
+                </tr>
+              </table>
+
+            </div>
+            <!--大二上-->
+            <div class="tab-pane fade" id="second-year1" role="tabpanel" aria-labelledby="second-year1-tab">
+              second-year
+              <table class="table table-hover21">
+                <thead>
+                  <tr>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>
+
+
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5702T0E-outlined2">
+                      <label class="btn btn-outline-secondary" onclick="add(this.id)" for="B5702T0E-outlined2"
+                        id="B5702T0E">機率論</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5702988-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5702988-outlined"
+                        id="B5702988">計算機組織學</label></p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5702N57-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5702N57-outlined1"
+                        id="B5702N57">資料結構</label></p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5702M57-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5702M57-outlined"
+                        id="B5702M57">資料結構實習</label>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57022TS-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B57022TS-outlined"
+                        id="B57022TS">Python程式語言</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5702R97-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B5702R97-outlined"
+                        id="B5702R97">數位影像處理</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B57021RP-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B57021RP-outlined"
+                        id="B57021RP">網頁程式設計</label>
+                    </p>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B570218K-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="B570218K-outlined"
+                        id="B570218K">數位系統設計</label>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+            </div>
+            <!--二下-->
+            <div class="tab-pane fade" id="second-year2" role="tabpanel" aria-labelledby="second-year2-tab">second-year2
+
+              <table class="table table-hover22">
+                <thead>
+                  <tr>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57021EB-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57021EB" onclick="add(this.id)"
+                        for="B57021EB-outlined">ASP.NET程式設計</label></p>
+                  </td>
+                  <td>
+                    <p>
+                      <input type="checkbox" class="btn-check" id="B5702P36-outlined"><label
+                        class="btn btn-outline-secondary" id="B5702P36" onclick="add(this.id)"
+                        for="B5702P36-outlined">電腦網路</label>
+                    </p>
+                  </td>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5702P98-outlined"><label
+                        class="btn btn-outline-secondary" id="B5702P98" onclick="add(this.id)"
+                        for="B5702P98-outlined">演算法</label>
+                    </p>
+                  </td>
+                  <td></td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B570234X-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B570234X" onclick="add(this.id)"
+                        for="B570234X-outlined">微處理器原理與組合語言</p>
+                    <p><input type="checkbox" class="btn-check" id="B57021Y4-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57021Y4" onclick="add(this.id)"
+                        for="B57021Y4-outlined">MATLAB
+                        程式設計</p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57020A6-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57020A6" onclick="add(this.id)"
+                        for="B57020A6-outlined">Verilog硬體描述語言</p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5702009-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5702009" onclick="add(this.id)"
+                        for="B5702009-outlined">JAVA程式設計</p>
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </table>
+
+            </div>
+            <!--三上-->
+            <div class="tab-pane fade" id="third-year1" role="tabpanel" aria-labelledby="third-year1-tab">third-year
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703S01-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703S01"
+                        for="B5703S01-outlined">數值分析</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B570339Q-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B570339Q"
+                        for="B570339Q-outlined">計算機系統設計</label>
+                    </p>
+                  </td>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703P6G-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703P6G"
+                        for="B5703P6G-outlined">電腦圖學</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B57033MD-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57033MD"
+                        for="B57033MD-outlined">iOS應用程式開發入門</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57033L9-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57033L9"
+                        for="B57033L9-outlined">巨量資料運算導論</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B57030OI-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57030OI"
+                        for="B57030OI-outlined">圖論演算法</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B5703K59-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703K59"
+                        for="B5703K59-outlined">軟體工程</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703660-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703660"
+                        for="B5703660-outlined">作業系統</label>
+                    </p>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703N54-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703N54"
+                        for="B5703N54-outlined">資料庫系統</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703991-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703991"
+                        for="B5703991-outlined">計算機結構</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B57031EC-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57031EC"
+                        for="B57031EC-outlined">資訊安全實務與管理</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M5701P7D-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701P7D"
+                        for="B57031EC-outlined">圖形識別</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57033MD-outlined2"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57033MD"
+                        for="B57033MD-outlined2">iOS應用程式開發入門</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703M36-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703M36"
+                        for="B5703M36-outlined">程式語言</label>
+                    </p>
+                  </td>
+                  <td></td>
+                </tr>
+              </table>
+
+            </div>
+            <!--三下-->
+            <div class="tab-pane fade" id="third-year2" role="tabpanel" aria-labelledby="third-year2-tab">third-year2
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57030TX-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57030TX"
+                        for="B57030TX-outlined">嵌入式系統設計</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B57031EC-outlined2"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57031EC"
+                        for="B57031EC-outlined2">資訊安全實務與管理
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B570332K-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B570332K"
+                        for="B570332K-outlined">機器學習技術</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B57034A9-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57034A9"
+                        for="B57034A9-outlined">iOS
+                        App遊戲開發345</p>
+                    <p><input type="checkbox" class="btn-check" id="B57032PA-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57032PA"
+                        for="B57032PA-outlined">物聯網技術與應用
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703K59-outlined2"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703K59"
+                        for="B5703K59-outlined2">軟體工程</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B5703Q0G-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703Q0G"
+                        for="B5703Q0G-outlined">編譯器</label>
+                    </p>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57031JQ-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57031JQ"
+                        for="B57031JQ-outlined">Android行動裝置軟體設計</p>
+                    <p><input type="checkbox" class="btn-check" id="B5703Q0G-outlined2"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703Q0G"
+                        for="B5703Q0G-outlined2">編譯器</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703021-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703021"
+                        for="B5703021-outlined">人工智慧</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B57031CX-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57031CX"
+                        for="B57031CX-outlined">機器視覺理論與應用
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B57034A9-outlined2"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B57034A9"
+                        for="B57034A9-outlined2">iOS
+                        App遊戲開發789</p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703IA4-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703IA4"
+                        for="B5703IA4-outlined">密碼學與應用</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="B5703M36-outlined2"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703M36"
+                        for="B5703M36-outlined2">程式語言</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="B5703723-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="B5703723"
+                        for="B5703723-outlined">系統程式</label>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+            </div>
+            <!--四上-->
+            <div class="tab-pane fade" id="fourth-year1" role="tabpanel" aria-labelledby="fourth-year1-tab">fourth-year
+              <table class="table table-hover41">
+                <thead>
+                  <tr>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57012TW-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M57012TW-outlined"
+                        id="M57012TW">物聯網核心技術</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M57011D1-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M57011D1-outlined"
+                        id="M57011D1">演算法設計與分析</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M5701M6E-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M5701M6E-outlined"
+                        id="M5701M6E">超大型積體電路設計</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M57012TT-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M57012TT-outlined"
+                        id="M57012TT">大數據分析</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M5701P38-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M5701P38-outlined"
+                        id="M5701P38">電腦視覺</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M5701FA1-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M5701FA1-outlined"
+                        id="M5701FA1">高等資料庫系統</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57014DM-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57014DM"
+                        for="M57014DM-outlined">高等無線通訊協定</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M5701418-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M5701418-outlined"
+                        id="M5701418">自然語言處理</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M570124P-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M570124P-outlined"
+                        id="M570124P">高等公開金鑰系統</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M57010HZ-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" for="M57010HZ-outlined"
+                        id="M57010HZ">高等密碼學專題(二)</label>
+                    </p>
+
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57014L9-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57014L9"
+                        for="M57014L9-outlined">人工智慧之網路應用</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57012TU-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57012TU"
+                        for="M57012TU-outlined">最佳化理論與應用</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57013WZ-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57013WZ"
+                        for="M57013WZ-outlined">電腦視覺多視角幾何之數理探討</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M5701J7K-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701J7K" for="M5701J7K-outlined">
+                        輸出入裝置與驅動程式設計</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M570139S-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M570139S"
+                        for="M570139S-outlined">機器學習處理器</label>
+                    </p>
+                  </td>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M5701SF1-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701SF1"
+                        for="M5701SF1-outlined">軟體正規方法</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M57013ZN-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57013ZN"
+                        for="M57013ZN-outlined">行動寬頻網路</label>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+
+                    <p><input type="checkbox" class="btn-check" id="M57013KL-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57013KL"
+                        for="M57013KL-outlined">深度學習社群媒體分析</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M5701P4B-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701P4B"
+                        for="M5701P4B-outlined">電腦安全</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M5701F5H-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701F5H"
+                        for="M5701F5H-outlined">高等無線網路專題</label>
+                    </p>
+                  </td>
+                  <td></td>
+                </tr>
+              </table>
+
+            </div>
+            <!--四下-->
+            <div class="tab-pane fade" id="fourth-year2" role="tabpanel" aria-labelledby="fourth-year2-tab">fourth-year2
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <td>一</td>
+                    <td>二</td>
+                    <td>三</td>
+                    <td>四</td>
+                    <td>五</td>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M5701T8K-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701T8K"
+                        for="M5701T8K-outlined">機器學習</label></p>
+                    <p><input type="checkbox" class="btn-check" id="M570197P-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M570197P"
+                        for="M570197P-outlined">計算理論</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M5701R1I-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701R1I"
+                        for="M5701R1I-outlined">網路安全</label></p>
+                    <p><input type="checkbox" class="btn-check" id="M570149Y-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M570149Y"
+                        for="M570149Y-outlined">遊戲引擎設計與實作</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M570171E-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M570171E"
+                        for="M570171E-outlined">可重組式系統晶片設計</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M570195K-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M570195K"
+                        for="M570195K-outlined">科學視算</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57014II-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57014II"
+                        for="M57014II-outlined">新興智慧技術與資料科學應用</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M5701NBA-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701NBA"
+                        for="M5701NBA-outlined">資訊檢索系統</label></p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M5701N5J-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701N5J"
+                        for="M5701N5J-outlined">資料探勘</label>
+
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M57010HY-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57010HY"
+                        for="M57010HY-outlined">高等密碼學專題</label>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57012PF-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57012PF"
+                        for="M57012PF-outlined">高等影像合成與形變技術</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57014JA-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57014JA"
+                        for="M57014JA-outlined">CNN架構與輕量化設計</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M5701P9D-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701P9D"
+                        for="M5701P9D-outlined">對局理論與網際網路</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M57013R6-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57013R6" for="M57013R6-outlined">
+                        人工智慧在生物醫學上的應用</label></p>
+                    <p><input type="checkbox" class="btn-check" id="M5702NB1-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5702NB1"
+                        for="M5702NB1-outlined">資訊擷取</label>
+                    </p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M570199H-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M570199H" for="M570199H-outlined">
+                        計算機網路</label></p>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57014IO-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57014IO"
+                        for="M57014IO-outlined">軟體設計</label></p>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>
+                  </td>
+                  <td>
+                    <p><input type="checkbox" class="btn-check" id="M57011Y5-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57011Y5"
+                        for="M57011Y5-outlined">高等微控軟體與硬體設計</label>
+                    </p>
+                    <p><input type="checkbox" class="btn-check" id="M57013R4-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M57013R4"
+                        for="M57013R4-outlined">社群資料分析</label></p>
+                    <p><input type="checkbox" class="btn-check" id="M5701SF6-outlined"><label
+                        class="btn btn-outline-secondary" onclick="add(this.id)" id="M5701SF6"
+                        for="M5701SF6-outlined">軟體專案管理</label></p>
+                  </td>
+                  <td></td>
+                </tr>
+              </table>
+
+
+            </div><!--4-->
+          </div><!--col-->
+        </div><!--dflex-->
+      </div>
+      <div class="col-sm-auto" width="80px">
+
+        <h5>必修學分</h5>
+        <div style="margin:10px">
+          <div>必修學分最低53</div>
+          <div class="radial-progress-bar">
+            <!-- Show number of percentages -->
+
+            <div class="radial-progress-bar__percentages" id="compulsory_credit">75</div>
+
+            <!-- The curve -->
+            <div class="radial-progress-bar__curve">
+              <!-- The first half -->
+              <div class="radial-progress-bar__half radial-progress-bar__half--first" id="compulsory_creditF"></div>
+
+              <!-- The second half -->
+              <div class="radial-progress-bar__half radial-progress-bar__half--second" id="compulsory_creditS"></div>
+            </div>
+          </div>
+        </div>
+
+        <h5>選修學分</h5>
+        <div style="margin:10px">
+          <div>系外選修學分最低54</div>
+          <div class="radial-progress-bar">
+            <!-- Show number of percentages -->
+
+            <div class="radial-progress-bar__percentages" id="elective_credit">0</div>
+
+            <!-- The curve -->
+            <div class="radial-progress-bar__curve">
+              <!-- The first half -->
+              <div class="radial-progress-bar__half radial-progress-bar__half--first" id="elective_creditF"></div>
+
+              <!-- The second half -->
+              <div class="radial-progress-bar__half radial-progress-bar__half--second" id="elective_creditS"></div>
+
+            </div>
+          </div>
+        </div>
+        <div style="margin:10px">
+          <div>核心選修學分最低12</div>
+          <div class="radial-progress-bar">
+            <!-- Show number of percentages -->
+
+            <div class="radial-progress-bar__percentages" id="celective_credit">3</div>
+
+            <!-- The curve -->
+            <div class="radial-progress-bar__curve">
+              <!-- The first half -->
+              <div class="radial-progress-bar__half radial-progress-bar__half--first" id="celective_creditF"></div>
+
+              <!-- The second half -->
+              <div class="radial-progress-bar__half radial-progress-bar__half--second" id="celective_creditS"></div>
+
+            </div>
+          </div>
+        </div>
+
+
+
+      </div><!--col-->
+    </div><!--row-->
+  </div><!--container-->
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>
